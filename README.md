@@ -1,50 +1,164 @@
-# React + TypeScript + Vite
+# RealTime Notes App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, real-time note-taking application built with React, TypeScript, and Firebase. Features include user authentication, real-time updates, and note sharing capabilities.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🔐 User Authentication (Email/Password)
+- 📝 Create, Read, Update, Delete Notes
+- 🌓 Dark/Light Theme Support
+- 🔄 Real-time Updates
+- 🤝 Note Sharing Capabilities
+- 🔍 Search Functionality
+- 📱 Responsive Design
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- React + TypeScript
+- Vite
+- Firebase (Authentication + Firestore)
+- Shadcn/ui Components
+- Tailwind CSS
 
-- Configure the top-level `parserOptions` property like this:
+## Prerequisites
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+Before you begin, ensure you have the following installed:
+- Node.js (v16 or higher)
+- npm or yarn
+- Git
+
+## Firebase Setup
+
+1. Create a new Firebase project at [Firebase Console](https://console.firebase.google.com)
+2. Enable Authentication and Firestore in your project
+3. Add a new Web App to your Firebase project
+4. Copy your Firebase configuration
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone <your-repo-url>
+cd firebase-notes-app
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+2. Install dependencies:
+```bash
+npm install
 ```
+
+3. Create a `.env` file in the root directory with your Firebase configuration:
+```env
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
+
+4. Update the Firebase configuration in `src/firebase/config.ts`:
+```typescript
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
+};
+```
+
+5. Start the development server:
+```bash
+npm run dev
+```
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── auth/
+│   │   ├── LoginForm.tsx
+│   │   └── ResetPasswordModal.tsx
+│   ├── notes/
+│   │   ├── NewNoteModal.tsx
+│   │   ├── NoteCard.tsx
+│   │   ├── NotesContainer.tsx
+│   │   ├── NotesGrid.tsx
+│   │   └── Sidebar.tsx
+│   ├── layout/
+│   │   └── Navbar.tsx
+│   └── theme/
+│       └── theme-provider.tsx
+├── firebase/
+│   ├── config.ts
+│   └── notes.ts
+├── hooks/
+│   └── useAuth.ts
+└── App.tsx
+```
+
+## Features Explanation
+
+### Authentication
+- Users can sign up with email and password
+- Login with existing credentials
+- Password reset functionality
+- Profile management
+
+### Notes Management
+- Create new notes with title and content
+- View all personal notes in a grid layout
+- Edit existing notes
+- Delete notes
+- Share notes with other users
+- Real-time updates when notes change
+
+### Theme Support
+- Toggle between light and dark themes
+- System preference detection
+- Theme persistence
+
+## Usage
+
+1. Sign up for a new account or log in with existing credentials
+2. Create a new note using the "+ New Note" button
+3. View your notes in the grid layout
+4. Edit or delete notes using the buttons on each note card
+5. Share notes with other users using their email
+6. Toggle between personal and shared notes using the sidebar
+7. Search through your notes using the search bar
+
+## Development
+
+To add new features or modify existing ones:
+
+1. Create a new branch:
+```bash
+git checkout -b feature/your-feature-name
+```
+
+2. Make your changes and commit them:
+```bash
+git add .
+git commit -m "Add your feature description"
+```
+
+3. Push to your branch:
+```bash
+git push origin feature/your-feature-name
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
