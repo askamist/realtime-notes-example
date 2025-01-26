@@ -1,12 +1,13 @@
 import { UserButton } from "@clerk/clerk-react"
 import { Button } from "@/components/ui/button"
+import { Moon, Sun } from "lucide-react"
+import { Link } from "react-router-dom"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Moon, Sun } from "lucide-react"
 import { useTheme } from "../theme/theme-provider"
 
 interface NavbarProps {
@@ -21,7 +22,9 @@ export function Navbar({ user }: NavbarProps) {
       <div className="container mx-auto px-4">
         <div className="flex h-14 items-center justify-between">
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold">Notes App</h1>
+            <Link to="/" className="text-2xl font-bold hover:opacity-80">
+              Notes App
+            </Link>
           </div>
 
           <div className="flex items-center space-x-4">
@@ -52,7 +55,7 @@ export function Navbar({ user }: NavbarProps) {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {user && <UserButton afterSignOutUrl="/" />}
+            {user && <UserButton afterSignOutUrl="/auth" />}
           </div>
         </div>
       </div>

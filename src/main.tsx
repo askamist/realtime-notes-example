@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { ClerkProvider } from '@clerk/clerk-react'
+import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import './index.css'
 import { dark } from '@clerk/themes'
@@ -16,7 +17,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <ClerkProvider appearance={{
       baseTheme: [dark],
     }} publishableKey={clerkPubKey}>
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </ClerkProvider>
   </React.StrictMode>,
 )

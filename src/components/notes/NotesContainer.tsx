@@ -1,10 +1,7 @@
 import { useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { NotesGrid } from './NotesGrid';
-import { NewNoteModal } from './NewNoteModal';
-import { createNote } from '@/firebase/notes';
 import { useUser } from "@clerk/clerk-react";
-import { toast } from 'sonner';
 
 interface Note {
   id: string;
@@ -21,32 +18,11 @@ export function NotesContainer() {
   const [notes] = useState<Note[]>([]);
   const [activeView, setActiveView] = useState<'personal' | 'shared'>('personal');
   // const [_, setSearchQuery] = useState('');
-  const [isNewNoteModalOpen, setIsNewNoteModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleNewNote = async (title: string, content: string) => {
+  const handleNewNote = async () => {
     if (!user) return;
-
-    try {
-      setIsLoading(true);
-      await createNote({
-        title,
-        content,
-        owner: user.id,
-        shared: false,
-        collaborators: [],
-      });
-
-      toast.success('Note created successfully!');
-      setIsNewNoteModalOpen(false);
-      // You'll want to refresh the notes list here
-      // We'll implement this in the next step with real-time updates
-    } catch (error) {
-      console.error('Error creating note:', error);
-      toast.error('Failed to create note. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
+    // Implement note adding
+    console.log('adding note');
   };
 
   const handleEdit = (id: string) => {
@@ -74,7 +50,7 @@ export function NotesContainer() {
       <Sidebar
         activeView={activeView}
         onViewChange={setActiveView}
-        onNewNote={() => setIsNewNoteModalOpen(true)}
+        onNewNote={handleNewNote}
       />
       <NotesGrid
         notes={notes}
@@ -83,12 +59,6 @@ export function NotesContainer() {
         onEdit={handleEdit}
         onShare={handleShare}
         onDelete={handleDelete}
-      />
-      <NewNoteModal
-        isOpen={isNewNoteModalOpen}
-        onClose={() => setIsNewNoteModalOpen(false)}
-        onSubmit={handleNewNote}
-        isLoading={isLoading}
       />
     </main>
   );
