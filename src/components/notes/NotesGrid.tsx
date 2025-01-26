@@ -1,22 +1,13 @@
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { NoteCard } from "./NoteCard"
-
-interface Note {
-  id: string;
-  title: string;
-  content: string;
-  owner: string;
-  shared: boolean;
-  collaborators: string[];
-  lastModified: Date;
-}
+import { Note } from "@/types"
 
 interface NotesGridProps {
   notes: Note[];
   activeView: 'personal' | 'shared';
   onSearch: (query: string) => void;
-  onEdit: (id: string) => void;
+  onEdit: (id: string, updates: { title?: string; content?: string }) => void;
   onShare: (id: string) => void;
   onDelete: (id: string) => void;
 }

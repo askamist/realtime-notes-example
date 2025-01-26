@@ -6,15 +6,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Note } from "@/types";
 
 interface NoteCardProps {
-  note: {
-    id: string;
-    title: string;
-    content: string;
-    lastModified: Date;
-  };
-  onEdit: (id: string) => void;
+  note: Note;
+  onEdit: (id: string, updates: { title?: string; content?: string }) => void;
   onShare: (id: string) => void;
   onDelete: (id: string) => void;
 }
@@ -32,10 +28,10 @@ export function NoteCard({ note, onEdit, onShare, onDelete }: NoteCardProps) {
       </CardContent>
       <CardFooter className="justify-between">
         <span className="text-sm text-muted-foreground">
-          {note.lastModified.toLocaleDateString()}
+          {new Date(note.updatedAt).toLocaleDateString()}
         </span>
         <div className="flex gap-2">
-          <Button size="sm" variant="ghost" onClick={() => onEdit(note.id)}>
+          <Button size="sm" variant="ghost" onClick={() => onEdit(note.id, {})}>
             Edit
           </Button>
           <Button size="sm" variant="ghost" onClick={() => onShare(note.id)}>
