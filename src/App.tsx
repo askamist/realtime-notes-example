@@ -1,37 +1,56 @@
-import { useState } from 'react'
-import './App.css'
-import { useAuth } from './hooks/useAuth'
-import { LoginForm } from './components/auth/LoginForm'
-import { ResetPasswordModal } from './components/auth/ResetPasswordModal'
-import { ThemeProvider } from './components/theme/theme-provider'
-import { Navbar } from './components/layout/Navbar'
-import { NotesContainer } from './components/notes/NotesContainer'
-
+import { SignIn, SignUp } from "@clerk/clerk-react";
+import { useAuth } from './hooks/useAuth';
+import { ThemeProvider } from './components/theme/theme-provider';
+import { Navbar } from './components/layout/Navbar';
+import { NotesContainer } from './components/notes/NotesContainer';
+import { useState } from 'react';
 
 function App() {
-  const { isLoggedIn, currentUser, error, isLoading, login, signup, logout, resetPassword } = useAuth();
-  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const { isLoggedIn, currentUser } = useAuth();
+  const [authView, setAuthView] = useState<'login' | 'signup'>('login');
 
   if (!isLoggedIn) {
     return (
       <ThemeProvider>
         <div className="min-h-screen bg-background">
-          <Navbar user={null} onLogout={() => { }} />
-          <div className="flex items-center justify-center min-h-[calc(100vh-3.5rem)]">
+          <Navbar user={null} />
+          <div className="flex flex-col items-center justify-center min-h-[calc(100vh-3.5rem)]">
             <div className="w-full max-w-[400px] px-4">
-              <LoginForm
-                onLogin={login}
-                onSignUp={signup}
-                onResetClick={() => setIsResetModalOpen(true)}
-                error={error}
-                isLoading={isLoading}
-              />
-              {isResetModalOpen && (
-                <ResetPasswordModal
-                  onReset={resetPassword}
-                  onClose={() => setIsResetModalOpen(false)}
-                  error={error}
-                  isLoading={isLoading}
+              <div className="mb-4 flex justify-center gap-4">
+                <button
+                  className={`px-4 py-2 ${authView === 'login' ? 'text-primary border-b-2 border-primary' : 'text-muted-foreground'}`}
+                  onClick={() => setAuthView('login')}
+                >
+                  Sign In
+                </button>
+                <button
+                  className={`px-4 py-2 ${authView === 'signup' ? 'text-primary border-b-2 border-primary' : 'text-muted-foreground'}`}
+                  onClick={() => setAuthView('signup')}
+                >
+                  Sign Up
+                </button>
+              </div>
+              {authView === 'login' ? (
+                <SignIn
+                  routing="hash"
+                  signUpUrl="#signup"
+                  appearance={{
+                    elements: {
+                      rootBox: "w-full",
+                      card: "w-full shadow-none",
+                    }
+                  }}
+                />
+              ) : (
+                <SignUp
+                  routing="hash"
+                  signInUrl="#login"
+                  appearance={{
+                    elements: {
+                      rootBox: "w-full",
+                      card: "w-full shadow-none",
+                    }
+                  }}
                 />
               )}
             </div>
@@ -44,11 +63,11 @@ function App() {
   return (
     <ThemeProvider>
       <div className="min-h-screen bg-background">
-        <Navbar user={currentUser} onLogout={logout} />
+        <Navbar user={currentUser} />
         <NotesContainer />
       </div>
     </ThemeProvider>
   );
 }
 
-export default App
+export default App;

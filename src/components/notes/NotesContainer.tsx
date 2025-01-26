@@ -3,7 +3,7 @@ import { Sidebar } from './Sidebar';
 import { NotesGrid } from './NotesGrid';
 import { NewNoteModal } from './NewNoteModal';
 import { createNote } from '@/firebase/notes';
-import { useAuth } from '@/hooks/useAuth';
+import { useUser } from "@clerk/clerk-react";
 import { toast } from 'sonner';
 
 interface Note {
@@ -17,22 +17,22 @@ interface Note {
 }
 
 export function NotesContainer() {
-  const { currentUser } = useAuth();
+  const { user } = useUser();
   const [notes] = useState<Note[]>([]);
   const [activeView, setActiveView] = useState<'personal' | 'shared'>('personal');
-  const [_, setSearchQuery] = useState('');
+  // const [_, setSearchQuery] = useState('');
   const [isNewNoteModalOpen, setIsNewNoteModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleNewNote = async (title: string, content: string) => {
-    if (!currentUser) return;
+    if (!user) return;
 
     try {
       setIsLoading(true);
       await createNote({
         title,
         content,
-        owner: currentUser.id,
+        owner: user.id,
         shared: false,
         collaborators: [],
       });
@@ -64,8 +64,8 @@ export function NotesContainer() {
     console.log('Deleting note:', id);
   };
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
+  const handleSearch = () => {
+    // setSearchQuery(query);
     // Implement search functionality
   };
 

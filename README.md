@@ -34,6 +34,36 @@ Before you begin, ensure you have the following installed:
 3. Add a new Web App to your Firebase project
 4. Copy your Firebase configuration
 
+## Clerk Setup
+
+1. Create a new Clerk application at [Clerk Dashboard](https://dashboard.clerk.dev)
+2. Copy your Publishable Key
+3. Add it to your `.env` file:
+```env
+VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+```
+
+Key changes made:
+1. Removed Firebase authentication
+2. Added Clerk authentication
+3. Updated components to use Clerk's hooks and components
+4. Added Clerk's UserButton for profile management
+5. Simplified auth state management
+6. Updated user identification in notes
+
+Benefits of using Clerk:
+1. More robust authentication out of the box
+2. Built-in UI components
+3. Social login support
+4. Better security features
+5. User management dashboard
+
+Would you like me to:
+1. Add social login providers?
+2. Customize Clerk's appearance further?
+3. Add protected routes?
+4. Add user profile management?
+
 ## Installation
 
 1. Clone the repository:
