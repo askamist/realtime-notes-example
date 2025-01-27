@@ -4,10 +4,10 @@ import { useNavigate, useLocation } from 'react-router-dom';
 export function AuthPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const isSignUp = location.hash === '#signup';
+  const isSignUp = location.pathname === '/sign-up';
 
   const handleTabChange = (isSignUpTab: boolean) => {
-    navigate(isSignUpTab ? '/#signup' : '/#login');
+    navigate(isSignUpTab ? '/sign-up' : '/sign-in');
   };
 
   return (
@@ -29,8 +29,9 @@ export function AuthPage() {
         </div>
         {!isSignUp ? (
           <SignIn
-            routing="hash"
-            signUpUrl="#signup"
+            routing="path"
+            path="/sign-in"
+            signUpUrl="/sign-up"
             appearance={{
               elements: {
                 rootBox: "w-full",
@@ -40,8 +41,9 @@ export function AuthPage() {
           />
         ) : (
           <SignUp
-            routing="hash"
-            signInUrl="#login"
+            routing="path"
+            path="/sign-up"
+            signInUrl="/sign-in"
             appearance={{
               elements: {
                 rootBox: "w-full",

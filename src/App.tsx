@@ -1,30 +1,34 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Layout } from "./components/layout/Layout";
+import { SignedIn, SignedOut, useUser } from "@clerk/clerk-react";
 import { HomePage } from "./routes/HomePage";
+import { TeamsPage } from "./routes/TeamsPage";
 import { AuthPage } from "./routes/AuthPage";
-import { ProtectedRoute } from "./components/auth/ProtectedRoute";
-import { useAuth } from "./hooks/useAuth";
+import { Navbar } from "@/components/layout/Navbar";
+import { ThemeProvider } from "./components/theme/theme-provider";
 
 function App() {
-  const { isLoggedIn } = useAuth();
+  const { user } = useUser();
+  const userData = user ? { name: user.firstName || 'User' } : null;
 
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route path="/" element={
-          <ProtectedRoute>
-            <HomePage />
-          </ProtectedRoute>
-        } />
+    <ThemeProvider>
+      <SignedIn>
+        <Navbar user={userData} />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/teams" element={<TeamsPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </SignedIn>
 
-        <Route path="/auth" element={
-          isLoggedIn ? <Navigate to="/" replace /> : <AuthPage />
-        } />
-
-        {/* Catch all route */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Route>
-    </Routes>
+      <SignedOut>
+        <Routes>
+          <Route path="/sign-in" element={<AuthPage />} />
+          <Route path="/sign-up" element={<AuthPage />} />
+          <Route path="*" element={<Navigate to="/sign-in" replace />} />
+        </Routes>
+      </SignedOut>
+    </ThemeProvider>
   );
 }
 

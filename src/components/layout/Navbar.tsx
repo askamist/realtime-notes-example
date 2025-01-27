@@ -21,10 +21,18 @@ export function Navbar({ user }: NavbarProps) {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
         <div className="flex h-14 items-center justify-between">
-          <div className="flex items-center">
+          <div className="flex items-center space-x-6">
             <Link to="/" className="text-2xl font-bold hover:opacity-80">
               Notes App
             </Link>
+            <nav className="flex gap-4">
+              <Link to="/" className="text-sm font-medium hover:text-primary">
+                Notes
+              </Link>
+              <Link to="/teams" className="text-sm font-medium hover:text-primary">
+                Teams
+              </Link>
+            </nav>
           </div>
 
           <div className="flex items-center space-x-4">
@@ -55,7 +63,7 @@ export function Navbar({ user }: NavbarProps) {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {user && <UserButton afterSignOutUrl="/auth" />}
+            {user && <UserButton afterSignOutUrl="/sign-in" />}
           </div>
         </div>
       </div>
