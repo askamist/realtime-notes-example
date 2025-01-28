@@ -67,3 +67,15 @@
     --chart-5: 340 75% 55%;
   }
 }
+
+/* Add these styles to handle Quill editor container */
+.ql-container {
+  min-height: 300px;
+  font-size: 16px;
+}
+
+.ql-editor {
+  min-height: 300px;
+  max-height: 600px;
+  overflow-y: auto;
+}

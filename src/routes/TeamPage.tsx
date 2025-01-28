@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Shield } from "lucide-react";
 import { teamsApi } from "@/lib/api/teams";
-import { Team } from "@/types/index";
+import { Team } from "@/types";
 
 export function TeamPage() {
   const { teamId } = useParams();

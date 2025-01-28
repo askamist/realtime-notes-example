@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Sidebar } from './Sidebar';
 import { NotesGrid } from './NotesGrid';
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { Note } from '@/types';
@@ -10,7 +9,6 @@ export function NotesContainer() {
   const { user } = useUser();
   const { getToken } = useAuth();
   const [notes, setNotes] = useState<Note[]>([]);
-  const [activeView, setActiveView] = useState<'personal' | 'shared'>('personal');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
@@ -84,6 +82,23 @@ export function NotesContainer() {
     console.log('Searching:', query);
   };
 
+  const handleAnalyzeTags = async (noteId: string) => {
+    if (!user) return;
+
+    try {
+      const token = await getToken();
+      await apiClient(`/api/notes/${noteId}/analyze-tags`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Refresh notes to get updated tags
+      fetchAllNotes();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to analyze tags');
+    }
+  };
+
   useEffect(() => {
     if (user) {
       fetchAllNotes();
@@ -115,18 +130,15 @@ export function NotesContainer() {
   }
 
   return (
-    <main className="container mx-auto py-6 flex gap-6">
-      <Sidebar
-        activeView={activeView}
-        onViewChange={setActiveView}
-        onNewNote={handleNewNote}
-      />
+    <main className="container mx-auto py-6">
       <NotesGrid
-        notes={activeView === 'personal' ? notes : sharedNotes}
-        activeView={activeView}
+        notes={notes}
+        sharedNotes={sharedNotes}
         onSearch={handleSearch}
         onShare={handleShare}
         onDelete={handleDelete}
+        onAnalyzeTags={handleAnalyzeTags}
+        onNewNote={handleNewNote}
       />
       {selectedNoteId && (
         <ShareNoteDialog
