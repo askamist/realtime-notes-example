@@ -5,6 +5,7 @@ import { TeamsPage } from "./routes/TeamsPage";
 import { AuthPage } from "./routes/AuthPage";
 import { Navbar } from "@/components/layout/Navbar";
 import { ThemeProvider } from "./components/theme/theme-provider";
+import { TeamPage } from "./routes/TeamPage";
 
 function App() {
   const { user } = useUser();
@@ -17,6 +18,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/teams" element={<TeamsPage />} />
+          <Route path="/teams/:teamId" element={<TeamPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </SignedIn>
