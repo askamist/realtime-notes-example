@@ -4,6 +4,7 @@ import { NotesGrid } from './NotesGrid';
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { Note } from '@/types';
 import { apiClient } from '@/lib/api-client';
+import { ShareNoteDialog } from './ShareNoteDialog';
 
 export function NotesContainer() {
   const { user } = useUser();
@@ -12,16 +13,26 @@ export function NotesContainer() {
   const [activeView, setActiveView] = useState<'personal' | 'shared'>('personal');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
+  const [sharedNotes, setSharedNotes] = useState<Note[]>([]);
 
-  const fetchNotes = useCallback(async () => {
+  const fetchAllNotes = useCallback(async () => {
     if (!user) return;
 
     try {
       const token = await getToken();
-      const data = await apiClient('/api/notes', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setNotes(data);
+      const [personalNotes, shared] = await Promise.all([
+        apiClient('/api/notes', {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        apiClient('/api/notes/shared', {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+
+      setNotes(personalNotes);
+      setSharedNotes(shared);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch notes');
     } finally {
@@ -48,24 +59,6 @@ export function NotesContainer() {
     }
   };
 
-  const handleEdit = async (id: string, updates: { title?: string; content?: string }) => {
-    if (!user) return;
-
-    try {
-      const token = await getToken();
-      const updatedNote = await apiClient(`/api/notes/${id}`, {
-        method: 'PUT',
-        headers: { Authorization: `Bearer ${token}` },
-        body: JSON.stringify(updates),
-      });
-      setNotes(prev => prev.map(note =>
-        note.id === id ? updatedNote : note
-      ));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update note');
-    }
-  };
-
   const handleDelete = async (id: string) => {
     if (!user) return;
 
@@ -81,9 +74,9 @@ export function NotesContainer() {
     }
   };
 
-  const handleShare = (id: string) => {
-    // Implement note sharing later
-    console.log('Sharing note:', id);
+  const handleShare = (noteId: string) => {
+    setSelectedNoteId(noteId);
+    setShareDialogOpen(true);
   };
 
   const handleSearch = (query: string) => {
@@ -93,9 +86,9 @@ export function NotesContainer() {
 
   useEffect(() => {
     if (user) {
-      fetchNotes();
+      fetchAllNotes();
     }
-  }, [user, fetchNotes]);
+  }, [user, fetchAllNotes]);
 
   if (!user) {
     return (
@@ -129,13 +122,25 @@ export function NotesContainer() {
         onNewNote={handleNewNote}
       />
       <NotesGrid
-        notes={notes}
+        notes={activeView === 'personal' ? notes : sharedNotes}
         activeView={activeView}
         onSearch={handleSearch}
-        onEdit={handleEdit}
         onShare={handleShare}
         onDelete={handleDelete}
       />
+      {selectedNoteId && (
+        <ShareNoteDialog
+          noteId={selectedNoteId}
+          isOpen={shareDialogOpen}
+          onClose={() => {
+            setShareDialogOpen(false);
+            setSelectedNoteId(null);
+          }}
+          onShare={() => {
+            fetchAllNotes();
+          }}
+        />
+      )}
     </main>
   );
 }
