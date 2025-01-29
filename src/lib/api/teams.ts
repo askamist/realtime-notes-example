@@ -1,4 +1,4 @@
-import { Team, TeamMember } from "@/types/index";
+import { Team, TeamMember } from "@/types";
 import { apiClient } from "../api-client";
 
 export const teamsApi = {

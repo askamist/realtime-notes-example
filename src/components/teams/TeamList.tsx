@@ -3,7 +3,7 @@ import { useAuth } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus, Shield } from "lucide-react";
-import { Team } from "@/types/index";
+import { Team } from "@/types";
 import { teamsApi } from "@/lib/api/teams";
 import {
   Card,

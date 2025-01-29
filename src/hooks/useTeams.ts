@@ -30,7 +30,7 @@ export function useTeams() {
       try {
         setLoading(true);
         const token = await getToken();
-        const response = await apiClient<TeamsResponse>("/api/teams", {
+        const response: TeamsResponse = await apiClient("/api/teams", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setTeams([...response.ownedTeams, ...response.memberTeams]);
@@ -50,7 +50,7 @@ export function useTeams() {
     try {
       setLoading(true);
       const token = await getToken();
-      const response = await apiClient<TeamsResponse>("/api/teams", {
+      const response: TeamsResponse = await apiClient("/api/teams", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTeams([...response.ownedTeams, ...response.memberTeams]);
