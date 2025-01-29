@@ -44,4 +44,13 @@ export const teamsApi = {
       headers: { Authorization: `Bearer ${token}` },
     });
   },
+
+  deleteTeam: async (teamId: string, token: string) => {
+    return apiClient(`/api/teams/${teamId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
 };

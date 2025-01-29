@@ -11,6 +11,13 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 export function TeamList() {
   const { getToken, userId } = useAuth();
@@ -18,6 +25,9 @@ export function TeamList() {
   const [ownedTeams, setOwnedTeams] = useState<Team[]>([]);
   const [memberTeams, setMemberTeams] = useState<Team[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newTeamName, setNewTeamName] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
 
   useEffect(() => {
     fetchTeams();
@@ -33,6 +43,25 @@ export function TeamList() {
     } catch (error) {
       console.error("Failed to fetch teams:", error);
       setError("Failed to load teams");
+    }
+  };
+
+  const handleCreateTeam = async () => {
+    if (!newTeamName.trim()) return;
+
+    setIsCreating(true);
+    try {
+      const token = await getToken();
+      const newTeam = await teamsApi.createTeam(newTeamName.trim(), token!);
+
+      setOwnedTeams([newTeam, ...ownedTeams]);
+      setNewTeamName("");
+      setIsDialogOpen(false);
+    } catch (error) {
+      console.error("Failed to create team:", error);
+      setError("Failed to create team");
+    } finally {
+      setIsCreating(false);
     }
   };
 
@@ -63,7 +92,7 @@ export function TeamList() {
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Teams</h1>
-        <Button onClick={() => navigate("/teams/new")}>
+        <Button onClick={() => setIsDialogOpen(true)}>
           <Plus className="h-4 w-4 mr-2" /> New Team
         </Button>
       </div>
@@ -95,6 +124,36 @@ export function TeamList() {
           You don't belong to any teams yet. Create one to get started!
         </div>
       )}
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New Team</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <Input
+              placeholder="Team Name"
+              value={newTeamName}
+              onChange={(e) => setNewTeamName(e.target.value)}
+            />
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setIsDialogOpen(false)}
+                disabled={isCreating}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleCreateTeam}
+                disabled={!newTeamName.trim() || isCreating}
+              >
+                {isCreating ? "Creating..." : "Create Team"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

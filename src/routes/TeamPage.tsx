@@ -3,9 +3,20 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Shield } from "lucide-react";
+import { ArrowLeft, Shield, Trash2 } from "lucide-react";
 import { teamsApi } from "@/lib/api/teams";
 import { Team } from "@/types";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export function TeamPage() {
   const { teamId } = useParams();
@@ -14,6 +25,7 @@ export function TeamPage() {
   const [team, setTeam] = useState<Team | null>(null);
   const [newMemberEmail, setNewMemberEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const isOwner = team?.ownerId === userId;
 
@@ -64,6 +76,22 @@ export function TeamPage() {
     }
   };
 
+  const handleDeleteTeam = async () => {
+    if (!teamId) return;
+
+    setIsDeleting(true);
+    try {
+      const token = await getToken();
+      await teamsApi.deleteTeam(teamId, token!);
+      navigate("/teams");
+    } catch (error) {
+      console.error("Failed to delete team:", error);
+      setError("Failed to delete team");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   if (error) {
     return (
       <div className="container mx-auto py-8">
@@ -82,7 +110,7 @@ export function TeamPage() {
 
   return (
     <div className="container mx-auto py-8 max-w-3xl">
-      <div className="mb-6">
+      <div className="mb-6 flex justify-between items-center">
         <Button
           variant="ghost"
           className="gap-2"
@@ -90,6 +118,35 @@ export function TeamPage() {
         >
           <ArrowLeft className="h-4 w-4" /> Back to Teams
         </Button>
+        {isOwner && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" disabled={isDeleting}>
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete Team
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete the
+                  team and remove all members.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDeleteTeam}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? "Deleting..." : "Delete Team"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
       </div>
 
       <div className="space-y-6">
