@@ -118,6 +118,11 @@ export function EditNotePage() {
             placeholder="Write your note here..."
             className="h-[350px]" // Adjust height as needed
           />
+          {/* <CollaborativeEditor
+            noteId={noteId!}
+            initialContent={content}
+            onChange={(newContent) => setContent(newContent)}
+          /> */}
         </div>
       </div>
     </div>

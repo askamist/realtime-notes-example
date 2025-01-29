@@ -49,6 +49,7 @@ export function NotesContainer() {
         body: JSON.stringify({
           title: 'New Note',
           content: 'Start writing...',
+          tags: [],
         }),
       });
       setNotes(prev => [newNote, ...prev]);
