@@ -4,6 +4,7 @@ import { useAuth, useUser } from "@clerk/clerk-react";
 import { Note } from '@/types';
 import { apiClient } from '@/lib/api-client';
 import { ShareNoteDialog } from './ShareNoteDialog';
+import { useNavigate } from 'react-router-dom';
 
 export function NotesContainer() {
   const { user } = useUser();
@@ -14,6 +15,7 @@ export function NotesContainer() {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
   const [sharedNotes, setSharedNotes] = useState<Note[]>([]);
+  const navigate = useNavigate();
 
   const fetchAllNotes = useCallback(async () => {
     if (!user) return;
@@ -43,18 +45,19 @@ export function NotesContainer() {
 
     try {
       const token = await getToken();
-      const newNote = await apiClient('/api/notes', {
-        method: 'POST',
+      const newNote = await apiClient("/api/notes", {
+        method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          title: 'New Note',
-          content: 'Start writing...',
+          title: "New Note",
+          content: "Start writing...",
           tags: [],
         }),
       });
-      setNotes(prev => [newNote, ...prev]);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create note');
+      await fetchAllNotes();
+      navigate(`/notes/${newNote.id}/edit`);
+    } catch (error) {
+      console.error("Failed to create note:", error);
     }
   };
 

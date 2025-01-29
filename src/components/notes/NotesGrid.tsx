@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { TagsFilter } from './TagsFilter'
 import { Badge } from "@/components/ui/badge"
 import { Note } from "@/types"
-import { Share2Icon, PlusIcon } from "lucide-react"
+import { Share2Icon, PlusIcon, Loader2 } from "lucide-react"
 import { NoteViewModal } from './NoteViewModal'
 
 interface NotesGridProps {
@@ -16,7 +16,7 @@ interface NotesGridProps {
   onShare: (id: string) => void;
   onDelete: (id: string) => void;
   onAnalyzeTags: (id: string) => void;
-  onNewNote: () => void;
+  onNewNote: () => Promise<void>;
 }
 
 export function NotesGrid({
@@ -32,6 +32,7 @@ export function NotesGrid({
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   // Combine and sort all notes by updatedAt
   const allNotes = [...notes, ...sharedNotes].sort((a, b) =>
@@ -66,6 +67,15 @@ export function NotesGrid({
     setIsModalOpen(true);
   };
 
+  const handleCreateNote = async () => {
+    setIsCreating(true);
+    try {
+      await onNewNote();
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
   return (
     <section className="flex-1">
       <div className="space-y-4">
@@ -73,12 +83,17 @@ export function NotesGrid({
           <div className="flex items-center gap-4">
             <h2 className="text-2xl font-semibold">My Notes</h2>
             <Button
-              onClick={onNewNote}
+              onClick={handleCreateNote}
               size="sm"
               className="flex items-center gap-2"
+              disabled={isCreating}
             >
-              <PlusIcon className="h-4 w-4" />
-              Create Note
+              {isCreating ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <PlusIcon className="h-4 w-4" />
+              )}
+              {isCreating ? "Creating..." : "Create Note"}
             </Button>
           </div>
           <Input
