@@ -1,96 +1,99 @@
-import { useEffect, useRef } from 'react';
-import ReactQuill, { Quill } from 'react-quill';
-import * as Y from 'yjs';
-import { WebsocketProvider } from 'y-websocket';
-import { QuillBinding } from 'y-quill';
-import QuillCursors from 'quill-cursors';
-import { useAuth } from '../../hooks/useAuth.js';
-import 'react-quill/dist/quill.snow.css';
+"use client";
 
-// Register the cursors module
+import Quill from "quill";
+import QuillCursors from "quill-cursors";
+import { QuillBinding } from "y-quill";
+import * as Y from "yjs";
+import { LiveblocksYjsProvider } from "@liveblocks/yjs";
+import { useEffect, useRef, useState } from "react";
+import { useRoom } from "@/liveblocks.config";
+import 'quill/dist/quill.snow.css';
+
+// Register Quill modules before any Quill usage
 Quill.register('modules/cursors', QuillCursors);
 
+import ReactQuill from "react-quill-new";
+
 interface CollaborativeEditorProps {
-  noteId: string;
   initialContent: string;
   onChange: (content: string) => void;
 }
 
-export function CollaborativeEditor({
-  noteId,
-  initialContent,
-  onChange,
-}: CollaborativeEditorProps) {
-  const quillRef = useRef<ReactQuill>(null);
-  const { currentUser } = useAuth();
+export function CollaborativeEditor({ onChange }: CollaborativeEditorProps) {
+  const room = useRoom();
+  const [text, setText] = useState<Y.Text>();
+  const [provider, setProvider] = useState<any>();
+
+  // Set up Liveblocks Yjs provider
+  useEffect(() => {
+    const yDoc = new Y.Doc();
+    const yText = yDoc.getText("quill");
+
+    const yProvider = new LiveblocksYjsProvider(room, yDoc);
+    setText(yText);
+    setProvider(yProvider);
+
+    console.log("yText", yText, yText.toString());
+
+    return () => {
+      yDoc?.destroy();
+      yProvider?.destroy();
+    };
+  }, [room]);
+
+  if (!text || !provider) {
+    return null;
+  }
+
+  return <QuillEditor yText={text} provider={provider} onChange={onChange} />;
+}
+
+type EditorProps = {
+  yText: Y.Text;
+  provider: any;
+  onChange: (content: string) => void;
+};
+
+function QuillEditor({ yText, provider, onChange }: EditorProps) {
+  const reactQuillRef = useRef<ReactQuill>(null);
 
   useEffect(() => {
-    const quill = quillRef.current?.getEditor();
+    const quill = reactQuillRef.current?.getEditor();
     if (!quill) return;
 
-    // Initialize Yjs document
-    const ydoc = new Y.Doc();
+    const binding = new QuillBinding(yText, quill, provider.awareness);
 
-    // Connect to WebSocket server
-    const provider = new WebsocketProvider(
-      'ws://localhost:3000',
-      `notes/${noteId}`,
-      ydoc,
-      { WebSocketPolyfill: WebSocket }
-    );
-
-    // Create a Y.Text type for the editor
-    const ytext = ydoc.getText('quill');
-
-    // Bind Quill to Yjs
-    const binding = new QuillBinding(ytext, quill, provider.awareness);
-
-    // Set initial content if document is empty
-    if (ytext.toString() === '') {
-      ytext.insert(0, initialContent);
-    }
-
-    // Handle awareness (cursor positions, user info)
-    provider.awareness.setLocalStateField('user', {
-      name: currentUser?.name,
-      color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-      id: currentUser?.id
-    });
-
-    // Update parent component when content changes
+    // Handle content changes
     quill.on('text-change', () => {
-      onChange(quill.root.innerHTML);
+      onChange(quill.getSemanticHTML());
     });
 
     return () => {
-      binding.destroy();
-      provider.destroy();
-      ydoc.destroy();
+      binding?.destroy?.();
     };
-  }, [noteId, initialContent, currentUser]);
+  }, [provider, onChange]);
 
   const modules = {
+    cursors: true,
     toolbar: [
       [{ 'header': [1, 2, 3, false] }],
       ['bold', 'italic', 'underline', 'strike'],
       ['blockquote', 'code-block'],
       [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-      [{ 'indent': '-1' }, { 'indent': '+1' }],
       ['link'],
       ['clean']
     ],
-    cursors: true
+    history: {
+      userOnly: true
+    }
   };
 
   return (
-    <div className="collaborative-editor">
-      <ReactQuill
-        ref={quillRef}
-        theme="snow"
-        modules={modules}
-        placeholder="Write your note here..."
-        className="h-[350px]"
-      />
-    </div>
+    <ReactQuill
+      placeholder="Start typing here…"
+      ref={reactQuillRef}
+      theme="snow"
+      modules={modules}
+    />
   );
 }

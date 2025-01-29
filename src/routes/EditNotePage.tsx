@@ -5,8 +5,8 @@ import { apiClient } from '@/lib/api-client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Note } from '@/types';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // Import Quill styles
+import { CollaborativeEditor } from '@/components/editor/CollaborativeEditor';
+import { RoomProvider as LiveblocksRoomProvider } from "@/liveblocks.config";
 
 export function EditNotePage() {
   const { noteId } = useParams();
@@ -17,28 +17,6 @@ export function EditNotePage() {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Quill modules configuration
-  const modules = {
-    toolbar: [
-      [{ 'header': [1, 2, 3, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      ['blockquote', 'code-block'],
-      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-      [{ 'indent': '-1' }, { 'indent': '+1' }],
-      ['link'],
-      ['clean']
-    ],
-  };
-
-  // Quill formats configuration
-  const formats = [
-    'header',
-    'bold', 'italic', 'underline', 'strike',
-    'blockquote', 'code-block',
-    'list', 'bullet', 'indent',
-    'link'
-  ];
 
   useEffect(() => {
     async function fetchNote() {
@@ -109,22 +87,15 @@ export function EditNotePage() {
         />
 
         <div className="min-h-[400px]">
-          <ReactQuill
-            theme="snow"
-            value={content}
-            onChange={setContent}
-            modules={modules}
-            formats={formats}
-            placeholder="Write your note here..."
-            className="h-[350px]" // Adjust height as needed
-          />
-          {/* <CollaborativeEditor
-            noteId={noteId!}
-            initialContent={content}
-            onChange={(newContent) => setContent(newContent)}
-          /> */}
+          <LiveblocksRoomProvider id={`notes/${noteId}`}>
+            <CollaborativeEditor
+              initialContent={content}
+              onChange={setContent}
+            />
+          </LiveblocksRoomProvider>
         </div>
       </div>
     </div>
   );
 }
+
