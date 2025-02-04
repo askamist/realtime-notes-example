@@ -10,8 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@clerk/clerk-react": "^5.22.6",
-    "@clerk/themes": "^2.2.12",
+    "@clerk/clerk-react": "^5.22.10",
+    "@clerk/themes": "^2.2.16",
     "@liveblocks/client": "^2.16.2",
     "@liveblocks/react": "^2.16.2",
     "@liveblocks/yjs": "^2.16.2",
@@ -32,9 +32,10 @@
     "quill-cursors": "4.0.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-error-boundary": "^5.0.0",
     "react-quill-new": "^3.3.3",
-    "react-router-dom": "^7.1.3",
-    "sonner": "^1.7.2",
+    "react-router-dom": "^7.1.5",
+    "sonner": "^1.7.4",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "ws": "^8.18.0",
@@ -42,22 +43,22 @@
     "yjs": "^13.6.23"
   },
   "devDependencies": {
-    "@eslint/js": "^9.17.0",
+    "@eslint/js": "^9.19.0",
     "@tailwindcss/typography": "^0.5.16",
-    "@types/node": "^22.10.10",
+    "@types/node": "^22.13.1",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
-    "eslint": "^9.17.0",
-    "eslint-plugin-react-hooks": "^5.0.0",
-    "eslint-plugin-react-refresh": "^0.4.16",
+    "eslint": "^9.19.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.18",
     "globals": "^15.14.0",
     "postcss": "^8.5.1",
     "tailwindcss": "3.4.17",
-    "typescript": "~5.6.2",
-    "typescript-eslint": "^8.18.2",
-    "vite": "^6.0.5"
+    "typescript": "~5.6.3",
+    "typescript-eslint": "^8.23.0",
+    "vite": "^6.0.11"
   },
   "packageManager": "pnpm@9.15.0+sha256.09a8fe31a34fda706354680619f4002f4ccef6dadff93240d24ef6c831f0fd28"
 }

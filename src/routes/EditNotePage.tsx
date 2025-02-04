@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Note } from '@/types';
 import { CollaborativeEditor } from '@/components/editor/CollaborativeEditor';
 import { RoomProvider as LiveblocksRoomProvider } from "@/liveblocks.config";
+import { ClientSideSuspense } from '@liveblocks/react';
+import { ErrorBoundary } from 'react-error-boundary';
 
 export function EditNotePage() {
   const { noteId } = useParams();
@@ -87,15 +89,19 @@ export function EditNotePage() {
         />
 
         <div className="min-h-[400px]">
-          <LiveblocksRoomProvider id={`notes/${noteId}`}>
-            <CollaborativeEditor
-              initialContent={content}
-              onChange={setContent}
-            />
-          </LiveblocksRoomProvider>
+          <ErrorBoundary fallback={<div>Error</div>}>
+            <LiveblocksRoomProvider id={`notes/${noteId}`}>
+              <ClientSideSuspense fallback={<div>Loading…</div>}>
+                <CollaborativeEditor
+                  initialContent={content}
+                  onChange={setContent}
+                />
+              </ClientSideSuspense>
+            </LiveblocksRoomProvider>
+          </ErrorBoundary>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 

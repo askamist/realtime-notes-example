@@ -29,53 +29,11 @@ function App() {
 
       <SignedOut>
         <Routes>
-          <Route path="/sign-in" element={<AuthPage />} />
+          <Route path="/sign-in/*" element={<AuthPage />} />
           <Route path="/sign-up" element={<AuthPage />} />
           <Route path="*" element={<Navigate to="/sign-in" replace />} />
         </Routes>
       </SignedOut>
-      {/* <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route
-          path="/notes"
-          element={
-            <>
-              <SignedIn>
-                <NotesPage />
-              </SignedIn>
-              <SignedOut>
-                <RedirectToSignIn />
-              </SignedOut>
-            </>
-          }
-        />
-        <Route
-          path="/notes/:noteId/edit"
-          element={
-            <>
-              <SignedIn>
-                <EditNotePage />
-              </SignedIn>
-              <SignedOut>
-                <RedirectToSignIn />
-              </SignedOut>
-            </>
-          }
-        />
-        <Route
-          path="/teams"
-          element={
-            <>
-              <SignedIn>
-                <TeamsPage />
-              </SignedIn>
-              <SignedOut>
-                <RedirectToSignIn />
-              </SignedOut>
-            </>
-          }
-        />
-      </Routes> */}
     </ThemeProvider>
   );
 }

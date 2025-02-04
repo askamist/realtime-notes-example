@@ -1,5 +1,5 @@
-import { SignIn, SignUp } from "@clerk/clerk-react";
 import { useNavigate, useLocation } from 'react-router-dom';
+import { SignIn, SignUp } from '@clerk/clerk-react';
 
 export function AuthPage() {
   const navigate = useNavigate();
@@ -29,9 +29,9 @@ export function AuthPage() {
         </div>
         {!isSignUp ? (
           <SignIn
-            routing="path"
             path="/sign-in"
             signUpUrl="/sign-up"
+            fallbackRedirectUrl="/notes"
             appearance={{
               elements: {
                 rootBox: "w-full",
@@ -41,9 +41,9 @@ export function AuthPage() {
           />
         ) : (
           <SignUp
-            routing="path"
             path="/sign-up"
             signInUrl="/sign-in"
+            fallbackRedirectUrl="/notes"
             appearance={{
               elements: {
                 rootBox: "w-full",
