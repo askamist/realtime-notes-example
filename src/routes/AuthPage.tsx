@@ -29,8 +29,6 @@ export function AuthPage() {
         </div>
         {!isSignUp ? (
           <SignIn
-            path="/sign-in"
-            signUpUrl="/sign-up"
             fallbackRedirectUrl="/notes"
             appearance={{
               elements: {
@@ -41,8 +39,6 @@ export function AuthPage() {
           />
         ) : (
           <SignUp
-            path="/sign-up"
-            signInUrl="/sign-in"
             fallbackRedirectUrl="/notes"
             appearance={{
               elements: {

@@ -63,7 +63,7 @@ export function Navbar({ user }: NavbarProps) {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {user && <UserButton afterSignOutUrl="/sign-in" />}
+            {user && <UserButton />}
           </div>
         </div>
       </div>
