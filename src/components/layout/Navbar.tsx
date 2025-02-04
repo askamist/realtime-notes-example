@@ -22,11 +22,14 @@ export function Navbar({ user }: NavbarProps) {
       <div className="container mx-auto px-4">
         <div className="flex h-14 items-center justify-between">
           <div className="flex items-center space-x-6">
-            <Link to="/" className="text-2xl font-bold hover:opacity-80">
+            <Link to="/#/" className="text-2xl font-bold hover:opacity-80">
               Notes App
             </Link>
             <nav className="flex gap-4">
               <Link to="/" className="text-sm font-medium hover:text-primary">
+                Home
+              </Link>
+              <Link to="/notes" className="text-sm font-medium hover:text-primary">
                 Notes
               </Link>
               <Link to="/teams" className="text-sm font-medium hover:text-primary">

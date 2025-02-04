@@ -9,6 +9,7 @@ import { CollaborativeEditor } from '@/components/editor/CollaborativeEditor';
 import { RoomProvider as LiveblocksRoomProvider } from "@/liveblocks.config";
 import { ClientSideSuspense } from '@liveblocks/react';
 import { ErrorBoundary } from 'react-error-boundary';
+import { Loader2 } from 'lucide-react';
 
 export function EditNotePage() {
   const { noteId } = useParams();
@@ -18,6 +19,7 @@ export function EditNotePage() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -43,6 +45,7 @@ export function EditNotePage() {
   }, [noteId, getToken]);
 
   const handleSave = async () => {
+    setIsSaving(true);
     try {
       const token = await getToken();
       await apiClient(`/api/notes/${noteId}`, {
@@ -53,6 +56,8 @@ export function EditNotePage() {
       navigate('/notes');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save note');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -74,10 +79,26 @@ export function EditNotePage() {
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Edit Note</h1>
           <div className="space-x-2">
-            <Button variant="outline" onClick={() => navigate('/notes')}>
+            <Button
+              variant="outline"
+              onClick={() => navigate('/notes')}
+              disabled={isSaving}
+            >
               Cancel
             </Button>
-            <Button onClick={handleSave}>Save</Button>
+            <Button
+              onClick={handleSave}
+              disabled={isSaving}
+            >
+              {isSaving ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                'Save'
+              )}
+            </Button>
           </div>
         </div>
 

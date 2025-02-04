@@ -112,9 +112,8 @@ export function TeamPage() {
     <div className="container mx-auto py-8 max-w-3xl">
       <div className="mb-6 flex justify-between items-center">
         <Button
-          variant="ghost"
-          className="gap-2"
-          onClick={() => navigate("/teams")}
+          variant="outline"
+          onClick={() => navigate('/teams')}
         >
           <ArrowLeft className="h-4 w-4" /> Back to Teams
         </Button>
