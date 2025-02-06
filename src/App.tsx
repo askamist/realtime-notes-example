@@ -23,7 +23,7 @@ function App() {
           <Route path="/notes/:noteId/edit" element={<EditNotePage />} />
           <Route path="/teams" element={<TeamsPage />} />
           <Route path="/teams/:teamId" element={<TeamPage />} />
-          <Route path="*" element={<Navigate to="/#/" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </SignedIn>
 
@@ -31,7 +31,7 @@ function App() {
         <Routes>
           <Route path="/sign-in/*" element={<AuthPage />} />
           <Route path="/sign-up" element={<AuthPage />} />
-          <Route path="*" element={<Navigate to="/#/sign-in" replace />} />
+          <Route path="*" element={<Navigate to="/sign-in" replace />} />
         </Routes>
       </SignedOut>
     </ThemeProvider>
